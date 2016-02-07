@@ -1,10 +1,19 @@
 require "thor"
 require "webrick"
+require "tmpdir"
 require "feedcellar/test/config"
+require "feedcellar/test/feed"
 
 module Feedcellar
   module Test
     class Server < Thor
+      def initialize(*args)
+        super
+        @tmpdir = Dir.mktmpdir("feedcellar-test")
+        File.write(File.join(@tmpdir, "feed.xml"),
+                   Feed.make)
+      end
+
       desc "server start", "Start server."
       def start
         srv_proc = lambda do
@@ -13,9 +22,11 @@ module Feedcellar
             :BindAddress => '127.0.0.1',
             :Port => PORT,
           }
-          srv = WEBrick::HTTPServer.new(config)
-          trap("INT") { srv.shutdown }
-          srv.start
+          Dir.chdir(@tmpdir) do
+            srv = WEBrick::HTTPServer.new(config)
+            trap("INT") { srv.shutdown }
+            srv.start
+          end
         end
 
         if File.basename($0) == "feedcellar-test"
