@@ -1,7 +1,6 @@
 require "thor"
-require "thor/group"
-require "rss"
 require "webrick"
+require "feedcellar/test/config"
 
 module Feedcellar
   module Test
@@ -12,7 +11,7 @@ module Feedcellar
           config = {
             :DocumentRoot => './',
             :BindAddress => '127.0.0.1',
-            :Port => 20075
+            :Port => PORT,
           }
           srv = WEBrick::HTTPServer.new(config)
           trap("INT") { srv.shutdown }
@@ -22,27 +21,18 @@ module Feedcellar
         if File.basename($0) == "feedcellar-test"
           srv_proc.call
         else
-          if @server
-            @server.run
-          else
-            @server = Thread.start do
-              config = {
-                :DocumentRoot => './',
-                :BindAddress => '127.0.0.1',
-                :Port => 20075
-              }
-              srv = WEBrick::HTTPServer.new(config)
-              trap("INT") { srv.shutdown }
-              srv.start
-            end
+          if @server && @server.alive?
+            $stderr.puts("Server is still running.")
+            return false
           end
+          @server = Thread.start(&srv_proc)
         end
       end
 
       desc "server stop", "Stop server."
       def stop
-        if @server
-          @server.stop
+        if @server && @server.alive?
+          @server.kill
         else
           $stderr.puts("Server is not run.")
           return false
