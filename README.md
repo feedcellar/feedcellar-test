@@ -27,7 +27,7 @@ Start server for sample RSS feed (http://localhost:20075/feed.xml):
 Or
 
 ```ruby
-require "feedcellar/test/command"
+require "feedcellar/test/server"
 
 server = Feedcellar::Test::Server.new
 server.start
