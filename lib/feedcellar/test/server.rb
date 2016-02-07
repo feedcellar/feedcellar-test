@@ -15,6 +15,7 @@ module Feedcellar
       end
 
       desc "server start", "Start server."
+      option :silent, :type => :boolean, :desc => "Stop logging."
       def start
         srv_proc = lambda do
           config = {
@@ -22,6 +23,10 @@ module Feedcellar
             :BindAddress => '127.0.0.1',
             :Port => PORT,
           }
+          if options[:silent]
+            config[:Logger] = WEBrick::Log.new(File.open(File::NULL, "w"))
+            config[:AccessLog] = []
+          end
           Dir.chdir(@tmpdir) do
             srv = WEBrick::HTTPServer.new(config)
             trap("INT") { srv.shutdown }

@@ -5,6 +5,7 @@ require "rexml/document"
 class ServerTest < Test::Unit::TestCase
   def setup
     @server = Feedcellar::Test::Server.new
+    @server.options = {silent: true}
     @server.start
   end
 
