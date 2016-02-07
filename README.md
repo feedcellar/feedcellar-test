@@ -20,7 +20,20 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+Start server for sample RSS feed (http://localhost:20075/feed.xml):
+
+    $ feedcellar-test server start
+
+Or
+
+```ruby
+require "feedcellar/test/command"
+
+server = Feedcellar::Test::Server.new
+server.start
+# use http://localhost:20075/feed.xml
+server.stop
+```
 
 ## Development
 
