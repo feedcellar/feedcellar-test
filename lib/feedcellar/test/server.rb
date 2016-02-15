@@ -1,17 +1,19 @@
 require "thor"
 require "webrick"
 require "tmpdir"
-require "feedcellar/test/config"
 require "feedcellar/test/feed"
 
 module Feedcellar
   module Test
     class Server < Thor
+      attr_reader :port, :base_url
       def initialize(*args)
         super
         @tmpdir = Dir.mktmpdir("feedcellar-test")
+        @port = 20000 + rand(5000)
+        @base_url = "http://localhost:#{@port}"
         File.write(File.join(@tmpdir, "feed.xml"),
-                   Feed.make)
+                   Feed.make(@base_url))
       end
 
       desc "server start", "Start server."
@@ -19,7 +21,7 @@ module Feedcellar
         config = {
           :DocumentRoot => './',
           :BindAddress => '127.0.0.1',
-          :Port => PORT,
+          :Port => @port,
         }
 
         srv_proc = lambda do

@@ -1,19 +1,18 @@
 require "rss"
-require "feedcellar/test/config"
 
 module Feedcellar
   module Test
     class Feed
-      def self.make
+      def self.make(base_url)
         rss = RSS::Maker.make("2.0") do |maker|
-          maker.channel.about = File.join(BASE_URL, "feed.xml")
+          maker.channel.about = File.join(base_url, "feed.xml")
           maker.channel.title = "Feedcellar Test"
           maker.channel.description = "Test Site"
-          maker.channel.link = BASE_URL
+          maker.channel.link = base_url
 
           1.upto(3) do |i|
             item = maker.items.new_item
-            item.link = File.join(BASE_URL, "article#{i}.html")
+            item.link = File.join(base_url, "article#{i}.html")
             item.title = "Sample Article #{i}"
             item.description = <<-DESCRIPTION
 Alice was beginning to get very tired of sitting by her sister on the bank, and of having nothing to do: once or twice she had peeped into the book her sister was reading, but it had no pictures or conversations in it, `and what is the use of a book,' thought Alice `without pictures or conversation?'
