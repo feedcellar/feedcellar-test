@@ -22,14 +22,14 @@ Or install it yourself as:
 
 Start server for sample RSS feed (http://localhost:20075/feed.xml):
 
-    $ feedcellar-test server start
+    $ feedcellar-test server start --port 20075
 
 Or
 
 ```ruby
 require "feedcellar/test/server"
 
-server = Feedcellar::Test::Server.new
+server = Feedcellar::Test::Server.new(port: 20075)
 server.start
 # use http://localhost:20075/feed.xml
 server.stop

@@ -5,18 +5,16 @@ require "feedcellar/test/feed"
 
 module Feedcellar
   module Test
-    class Server < Thor
+    class Server
       attr_reader :port, :base_url
-      def initialize(*args)
-        super
+      def initialize(options={})
         @tmpdir = Dir.mktmpdir("feedcellar-test")
-        @port = 20000 + rand(5000)
+        @port = options[:port] || 20000 + rand(5000)
         @base_url = "http://localhost:#{@port}"
         File.write(File.join(@tmpdir, "feed.xml"),
                    Feed.make(@base_url))
       end
 
-      desc "server start", "Start server."
       def start
         config = {
           :DocumentRoot => './',
@@ -45,7 +43,6 @@ module Feedcellar
         end
       end
 
-      desc "server stop", "Stop server."
       def stop
         if @server && @server.alive?
           @server.kill

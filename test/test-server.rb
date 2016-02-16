@@ -4,7 +4,7 @@ require "rexml/document"
 
 class ServerTest < Test::Unit::TestCase
   def setup
-    @server = Feedcellar::Test::Server.new
+    @server = Feedcellar::Test::Server.new(port: 20075)
     @server.start
   end
 
